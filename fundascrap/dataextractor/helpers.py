@@ -10,7 +10,7 @@ import numpy as np
 
 
 def json_reader(filename, to_num):
-    df = pd.read_json()
+    df = pd.read_json(f'../{filename}')
 
 
 
@@ -18,7 +18,7 @@ def json_reader(filename, to_num):
 
 
 def main():
-    pass
+    json_reader('posts.json')
 
 
 if __name__ == "__main__":
