@@ -6,7 +6,7 @@ Created on 20/11/2020
 
 import pandas as pd
 from datetime import date
-import json
+
 
 # Main action:
 # cd fundascrap
@@ -29,7 +29,7 @@ def update_neighbor(filename='houses.csv'):
     df_new = pd.concat([df, df_history]).drop_duplicates('link')
 
     # Save updated history file
-    df_new.to_csv('../data/houses.csv', index=False)
+    df_new.to_csv('../data/houses.csv', index=False, columns=['city', 'buurt', 'title', 'subtitle', 'price', 'rooms', 'area1', 'area2', 'date', 'link'])
 
 
 def main():
