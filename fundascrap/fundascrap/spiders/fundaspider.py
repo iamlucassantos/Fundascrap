@@ -12,26 +12,50 @@ import re
 class FundaSpider(scrapy.Spider):
     name = "funda"
 
-    def __init__(self):
-        min_price = 400000
+    def __init__(self, tuin='tuin'):
+        min_price = 300000
         max_price = 900000
 
         # Amsterdam links
         ams_buurt_str = """jordaan,kadoelen,kinkerbuurt,landlust,lutkemeer-ookmeer,middelveldsche-akerpolder,middenmeer,ijburg-oost,ijburg-west,ijburg-zuid,ijplein-vogelbuurt,ijselbuurt,indische-buurt-oost,indische-buurt-west,grachtengordel-west,grachtengordel-zuid,haarlemmerbuurt,helmersbuurt,holendrecht-reigersbos,hoofddorppleinbuurt,hoofdweg-eo,houthavens,de-punt,de-weteringschans,driemond,eendracht,elzenhagen,erasmuspark,frankendael,frederik-hendrikbuurt,gein,geuzenbuurt,geuzenveld,buikslotermeer,buitenveldert-oost,buitenveldert-west,burgwallen-nieuwe-zijde,burgwallen-oude-zijde,centrale-markt,chassebuurt,da-costabuurt,dapperbuurt,de-kolenkit,apollobuurt,banne-buiksloot,bedrijventerrein-sloterdijk,betondorp,bijlmer-centrum-dfh,bijlmer-oost-egk,museumkwartier,nellestein,nieuwe-pijp,nieuwendammerdijk-buiksloterdijk,nieuwmarkt-lastage,noordelijke-ij-oevers-oost,noordelijke-ij-oevers-west,omval-overamstel,oostelijk-havengebied,oostelijke-eilanden-kadijken,oosterparkbuurt,oostzanerwerf,osdorp-midden,osdorp-oost,oude-pijp,overtoomse-sluis,overtoomse-veld,prinses-irenebuurt-eo,rijnbuurt,scheldebuurt,schinkelbuurt,sloter-riekerpolder,sloterdijk,slotermeer-noordoost,slotermeer-zuidwest,slotervaart-noord,slotervaart-zuid,spaarndammer-en-zeeheldenbuurt,staatsliedenbuurt,stadionbuurt,transvaalbuurt,tuindorp-buiksloot,tuindorp-nieuwendam,tuindorp-oostzaan,van-galenbuurt,van-lennepbuurt,volewijck,vondelbuurt,water,waterland,waterlandpleinbuurt,weesperbuurt-plantage,weesperzijde,westindische-buurt,westlandgracht,willemspark,westelijk-havengebied,zeeburgereiland-nieuwe-diep,zuid-pijp,zuidas"""
         ams_buurt = set(ams_buurt_str.split(','))
-        ams_url = [f'https://www.funda.nl/koop/amsterdam/{buurt}/{min_price}-{max_price}/' for buurt in ams_buurt]
+
 
         # Utrecht links
         utr_buurt_str = """2e-daalsebuurt-en-omgeving,abstede-tolsteegsingel-eo,bedrijventerrein-lageweide,bleekstraat-en-omgeving,bokkenbuurt,breedstraat-en-plompetorengracht-en-omgeving,breedstraat-en-plompetorengracht-en-omgeving,buiten-wittevrouwen,dichterswijk,domplein-neude-janskerkhof,egelantierstraat-mariendaalstraat-eo,elinkwijk-en-omgeving,galgenwaard-en-omgeving,geuzenwijk,grauwaart,halve-maan-noord,halve-maan-zuid,het-zand-oost,het-zand-west,hoge-weide,hooch-boulandt,hoog-catharijne-ns-en-jaarbeurs,huizingalaan-k-doormanlaan-en-omgeving,julianapark-en-omgeving,kanaleneiland-noord,kanaleneiland-zuid,l-napoleonplantsoen-en-omgeving,laan-van-nieuw-guinea-spinozaweg-eo,lange-elisabethstraat-mariaplaats-en-omgeving,lange-nieuwstraat-en-omgeving,langerak,lauwerecht,leeuwesteyn,leidsche-rijn-centrum,leidseweg-en-omgeving,lombok-oost,lombok-west,lunetten-noord,lunetten-zuid,maarschalkerweerd-en-mereveld,neckardreef-en-omgeving,nieuw-engeland-th-a-kempisplantsoen-en-omgeving,nieuw-hoograven-noord,nieuw-hoograven-zuid,nieuwegracht-oost,nijenoord-hoogstraat-en-omgeving,nobelstraat-en-omgeving,ondiep,oog-in-al,oud-hoograven-noord,oud-hoograven-zuid,oudwijk,parkwijk-noord,parkwijk-zuid,pijlsweerd-noord,pijlsweerd-zuid,poldergebied-overvecht,prins-bernhardplein-en-omgeving,queeckhovenplein-en-omgeving,rijnenburg,rijnsweerd,rijnvliet,rivierenwijk,rubenslaan-en-omgeving,schaakbuurt-en-omgeving,schepenbuurt-cartesiusweg-eo,schildersbuurt,springweg-en-omgeving-geertebuurt,staatsliedenbuurt,taag-en-rubicondreef-en-omgeving,terwijde-oost,terwijde-west,tigrisdreef-en-omgeving,tolsteeg-en-rotsoord,transwijk-noord,transwijk-zuid,tuindorp-en-van-lieflandlaan-west,tuindorp-oost,tuinwijk-oost,tuinwijk-west,vechtzoom-noord-klopvaart,vechtzoom-zuid,vogelenbuurt,voordorp-en-voorveldsepolder,watervogelbuurt,welgelegen-den-hommel,wijk-c,wilhelminapark-en-omgeving,wittevrouwen,wolga-en-donaudreef-en-omgeving,zambesidreef-en-omgeving,zamenhofdreef-en-omgeving,zeeheldenbuurt-hengeveldstraat-en-omgeving,zuilen-noord"""
         utr_buurt = set(utr_buurt_str.split(','))
-        utr_url = [f'https://www.funda.nl/koop/utrecht/{buurt}/{min_price}-{max_price}/' for buurt in utr_buurt]
+
 
         # Rotterdam links
         rot_buurt_str = """afrikaanderwijk,agniesebuurt,bergpolder,beverwaard,blijdorp,bloemhof,bospolder,carnisse,charlois-zuidrand,cool,cs-kwartier,de-esch,delfshaven,dijkzigt,feijenoord,groot-ijsselmonde,heijplaat,het-lage-land,hillegersberg-noord,hillegersberg-zuid,hillesluis,katendrecht,kleinpolder,kop-van-zuid,kop-van-zuid-entrepot,kralingen-oost,kralingen-west,kralingse-bos,kralingseveer,liskwartier,lombardijen,middelland,molenlaankwartier,nesselande,nieuw-crooswijk,nieuwe-werk,nieuwe-westen,noordereiland,ommoord,oosterflank,oud-charlois,oud-crooswijk,oud-ijsselmonde,oud-mathenesse,oude-noorden,oude-westen,overschie,pendrecht,prinsenland,provenierswijk,rubroek,schiebroek,schiemond,schieveen,s-gravenland,spangen,stadsdriehoek,struisenburg,tarwewijk,terbregge,tussendijken,vreewijk,zestienhoven,zevenkamp,zuiderpark,zuidplein,zuidwijk"""
         rot_buurt = set(rot_buurt_str.split(','))
-        rot_url = [f'https://www.funda.nl/koop/rotterdam/{buurt}/{min_price}-{max_price}/' for buurt in rot_buurt]
 
-        self.start_urls = ams_url + utr_url + rot_url
+
+        # Den Haag link
+        hag_buurt_str = """archipelbuurt,arendsdorp,belgisch-park,bezuidenhout-midden,bezuidenhout-oost,bezuidenhout-west,binckhorst,bloemenbuurt-oost,bloemenbuurt-west,bohemen-en-meer-en-bos,bomenbuurt,bosjes-van-pex,bosweide,burgen-en-horsten,componistenbuurt,de-bras,de-lanen,de-uithof,de-velden,de-venen,de-vissen,dreven-en-gaarden,duindorp,duinzigt,duttendel,erasmus-veld,eykenduinen,geuzenkwartier,groente-en-fruitmarkt,haagse-bos,heesterbuurt,hoge-veld,houtwijk,huygenspark,kampen,kijkduin,kom-loosduinen,koningsplein-en-omgeving,kortenbos,kraayenstein-en-vroondaal,laakhaven-oost,laakhaven-west,laakkwartier-oost,laakkwartier-west,lage-veld,landen,leyenburg,marlot,moerwijk-noord,moerwijk-oost,moerwijk-west,moerwijk-zuid,morgenstond-oost,morgenstond-west,morgenstond-zuid,morgenweide,nassaubuurt,nieuw-waldeck,noordpolderbuurt,ockenburgh,oostbroek-noord,oostbroek-zuid,oud-scheveningen,parkbuurt-oosteinde,rietbuurt,rijslag,rivierenbuurt-noord,rivierenbuurt-zuid,rond-de-energiecentrale,rosenburg,rustenburg,scheveningen-badplaats,schildersbuurt-noord,schildersbuurt-oost,schildersbuurt-west,singels,spoorwijk,stadhoudersplantsoen,statenkwartier,sweelinckplein-en-omgeving,transvaalkwartier-midden,transvaalkwartier-noord,transvaalkwartier-zuid,uilebomen,uilennest,valkenboskwartier,van-hoytemastraat-en-omgeving,van-stolkpark-en-scheveningse-bosjes,venen-oorden-en-raden,visserijbuurt,vissershaven,vlietzoom-west,vogelwijk,voorhout,vruchtenbuurt,waalsdorp,waldeck-noord,waldeck-zuid,waterbuurt,westbroekpark,willemspark,zeeheldenkwartier,zijden-steden-en-zichten,zonne-veld,zorgvliet,zuidwal"""
+        hag_buurt = set(hag_buurt_str.split(','))
+
+
+        if tuin == 'tuin':
+            ams_url = [f'https://www.funda.nl/koop/amsterdam/{buurt}/{min_price}-{max_price}/85+woonopp/tuin/' for buurt
+                       in ams_buurt]
+            utr_url = [f'https://www.funda.nl/koop/utrecht/{buurt}/{min_price}-{max_price}/85+woonopp/tuin/' for buurt
+                       in utr_buurt]
+            rot_url = [f'https://www.funda.nl/koop/rotterdam/{buurt}/{min_price}-{max_price}/85+woonopp/tuin/' for buurt
+                       in rot_buurt]
+            hag_url = [f'https://www.funda.nl/koop/den-haag/{buurt}/{min_price}-{max_price}/85+woonopp/tuin/' for buurt
+                       in hag_buurt]
+        else:
+            ams_url = [f'https://www.funda.nl/koop/amsterdam/{buurt}/{min_price}-{max_price}/85+woonopp/' for buurt
+                       in ams_buurt]
+            utr_url = [f'https://www.funda.nl/koop/utrecht/{buurt}/{min_price}-{max_price}/85+woonopp/' for buurt
+                       in utr_buurt]
+            rot_url = [f'https://www.funda.nl/koop/rotterdam/{buurt}/{min_price}-{max_price}/85+woonopp/' for buurt
+                       in rot_buurt]
+            hag_url = [f'https://www.funda.nl/koop/den-haag/{buurt}/{min_price}-{max_price}/85+woonopp/' for buurt
+                       in hag_buurt]
+
+        self.start_urls = ams_url + utr_url + rot_url + hag_url
 
     def parse(self, response):
         for post in response.css('div.search-result-content-inner'):
